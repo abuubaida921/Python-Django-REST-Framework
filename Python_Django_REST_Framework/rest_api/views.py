@@ -48,6 +48,7 @@ def course_create(request):
             return HttpResponse(json_data,content_type='application/json')
         json_data = JSONRenderer().render(serialized.errors)
         return HttpResponse(json_data,content_type='application/json')
+    
     if request.method == "PUT":
         json_data=request.body
         #json to stream
@@ -64,4 +65,17 @@ def course_create(request):
             json_data = JSONRenderer().render(res)
             return HttpResponse(json_data,content_type='application/json')
         json_data = JSONRenderer().render(serialized.errors)
+        return HttpResponse(json_data,content_type='application/json')
+    
+    if request.method == "DELETE":
+        json_data=request.body
+        #json to stream
+        stream=io.BytesIO(json_data)
+        #stream to python
+        pythonData= JSONParser().parse(stream)
+        id=pythonData.get('id')
+        courseID=Courses.objects.get(id=id)
+        courseID.delete()
+        res = {'msg':'Data deleted successfully'}
+        json_data = JSONRenderer().render(res)
         return HttpResponse(json_data,content_type='application/json')
