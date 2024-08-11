@@ -3,6 +3,9 @@ from . models import Courses
 from . serializers import CoursesSerializer
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import io
+from rest_framework.parsers import JSONParser
 
 # Create your views here.
 #QuerySet
@@ -26,3 +29,22 @@ def courses_instance(request, pk):
     json_data=JSONRenderer().render(serialized.data)
     #Send to user for view
     return HttpResponse(json_data, content_type='application/json')
+
+#Create new data
+@csrf_exempt
+def course_create(request):
+    if request.method == "POST":
+        json_data=request.body
+        #json to stream
+        stream=io.BytesIO(json_data)
+        #stream to python
+        pythonData= JSONParser().parse(stream)
+        #python to complex
+        serialized = CoursesSerializer(data=pythonData)
+        if serialized.is_valid:
+            serialized.save()
+            res = {'msg':'Data inserted successfully'}
+            json_data = JSONRenderer().render(res)
+            return HttpResponse(json_data,content_type='application/json')
+        json_data = JSONRenderer().render(serialized.errors)
+        return HttpResponse(json_data,content_type='application/json')
