@@ -15,3 +15,14 @@ def courses_info(request):
     json_data=JSONRenderer().render(serialized.data)
     #Send to user for view
     return HttpResponse(json_data, content_type='application/json')
+
+#Model Object
+def courses_instance(request, pk):
+    #Complex data
+    courses=Courses.objects.get(id=pk)
+    #Python Dictionary
+    serialized = CoursesSerializer(courses)
+    #Render to json
+    json_data=JSONRenderer().render(serialized.data)
+    #Send to user for view
+    return HttpResponse(json_data, content_type='application/json')
