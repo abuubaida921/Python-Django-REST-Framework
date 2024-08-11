@@ -34,6 +34,9 @@ def courses_instance(request, pk):
 @csrf_exempt
 def course_create(request):
     if request.method == "POST":
+        print('===============================')
+        print(request.body)
+        print('===============================')
         json_data=request.body
         #json to stream
         stream=io.BytesIO(json_data)
