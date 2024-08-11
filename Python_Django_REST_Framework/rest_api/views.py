@@ -41,9 +41,26 @@ def course_create(request):
         pythonData= JSONParser().parse(stream)
         #python to complex
         serialized = CoursesSerializer(data=pythonData)
-        if serialized.is_valid:
+        if serialized.is_valid():
             serialized.save()
             res = {'msg':'Data inserted successfully'}
+            json_data = JSONRenderer().render(res)
+            return HttpResponse(json_data,content_type='application/json')
+        json_data = JSONRenderer().render(serialized.errors)
+        return HttpResponse(json_data,content_type='application/json')
+    if request.method == "PUT":
+        json_data=request.body
+        #json to stream
+        stream=io.BytesIO(json_data)
+        #stream to python
+        pythonData= JSONParser().parse(stream)
+        id=pythonData.get('id')
+        courseID=Courses.objects.get(id=id)
+        #python to complex
+        serialized = CoursesSerializer(courseID,data=pythonData,partial=True)
+        if serialized.is_valid():
+            serialized.save()
+            res = {'msg':'Data updated successfully'}
             json_data = JSONRenderer().render(res)
             return HttpResponse(json_data,content_type='application/json')
         json_data = JSONRenderer().render(serialized.errors)

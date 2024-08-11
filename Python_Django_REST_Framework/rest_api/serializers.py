@@ -9,3 +9,11 @@ class CoursesSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Courses.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.teacher_name=validated_data.get('teacher_name',instance.teacher_name)
+        instance.course_name=validated_data.get('course_name',instance.course_name)
+        instance.course_duration=validated_data.get('teacher_name',instance.course_duration)
+        instance.seat=validated_data.get('teacher_name',instance.seat)
+        instance.save()
+        return instance
