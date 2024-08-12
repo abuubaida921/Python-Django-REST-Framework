@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 # Create your views here.
 
-@api_view(['GET', 'POST', 'PUT', 'PATCH'])
+@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
 def course_create(request, pk=None):
     if request.method == 'GET':
         id = pk
@@ -47,3 +47,9 @@ def course_create(request, pk=None):
             serialized.save()
             return Response({'msg':'Partial data updated Successfully'})
         return Response(serialized.errors)
+    
+    if request.method == 'DELETE':
+        id=pk
+        course =Courses.objects.get(pk=id)
+        course.delete()
+        return Response({'msg':'Data deleted Successfully'})
