@@ -21,6 +21,6 @@ from rest_api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('course-create/', views.course_create, name='coursecreate'),
-    path('course-create/<int:pk>', views.course_create, name='coursecreate'),
+    path('course-create/', views.course_create.as_view(), name='coursecreate'),
+    path('course-create/<int:pk>', views.course_create.as_view(), name='coursecreate'),
 ]

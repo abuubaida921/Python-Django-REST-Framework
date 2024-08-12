@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from . models import Courses
 from . serializers import CoursesSerializer
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 
 # Create your views here.
 
-@api_view(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
-def course_create(request, pk=None):
-    if request.method == 'GET':
+
+class course_create(APIView):
+    def get(self,request, pk=None,format=None):
         id = pk
         if id is not None:
             #Complex data
@@ -23,14 +23,14 @@ def course_create(request, pk=None):
         serialized = CoursesSerializer(courses,many=True)
         return Response(serialized.data)
     
-    if request.method == 'POST':
+    def post(self,request,format=None):
         serialized = CoursesSerializer(data=request.data)
         if serialized.is_valid():
             serialized.save()
             return Response({'msg':'Data inserted Successfully'})
         return Response(serialized.errors)
     
-    if request.method == 'PUT':
+    def put(self,request, pk,format=None):
         id=pk
         course =Courses.objects.get(pk=id)
         serialized = CoursesSerializer(course, data=request.data)
@@ -39,7 +39,7 @@ def course_create(request, pk=None):
             return Response({'msg':'Full data updated Successfully'})
         return Response(serialized.errors)
     
-    if request.method == 'PATCH':
+    def patch(self,request, pk,format=None):
         id=pk
         course =Courses.objects.get(pk=id)
         serialized = CoursesSerializer(course, data=request.data, partial=True)
@@ -48,7 +48,7 @@ def course_create(request, pk=None):
             return Response({'msg':'Partial data updated Successfully'})
         return Response(serialized.errors)
     
-    if request.method == 'DELETE':
+    def delete(self,request, pk,format=None):
         id=pk
         course =Courses.objects.get(pk=id)
         course.delete()
