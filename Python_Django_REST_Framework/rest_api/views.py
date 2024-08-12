@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 # Create your views here.
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PUT', 'PATCH'])
 def course_create(request, pk=None):
     if request.method == 'GET':
         id = pk
@@ -28,4 +28,22 @@ def course_create(request, pk=None):
         if serialized.is_valid():
             serialized.save()
             return Response({'msg':'Data inserted Successfully'})
+        return Response(serialized.errors)
+    
+    if request.method == 'PUT':
+        id=pk
+        course =Courses.objects.get(pk=id)
+        serialized = CoursesSerializer(course, data=request.data)
+        if serialized.is_valid():
+            serialized.save()
+            return Response({'msg':'Full data updated Successfully'})
+        return Response(serialized.errors)
+    
+    if request.method == 'PATCH':
+        id=pk
+        course =Courses.objects.get(pk=id)
+        serialized = CoursesSerializer(course, data=request.data, partial=True)
+        if serialized.is_valid():
+            serialized.save()
+            return Response({'msg':'Partial data updated Successfully'})
         return Response(serialized.errors)
