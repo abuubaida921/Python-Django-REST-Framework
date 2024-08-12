@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 # Create your views here.
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def course_create(request, pk=None):
     if request.method == 'GET':
         id = pk
@@ -22,3 +22,10 @@ def course_create(request, pk=None):
         #Python Dictionary
         serialized = CoursesSerializer(courses,many=True)
         return Response(serialized.data)
+    
+    if request.method == 'POST':
+        serialized = CoursesSerializer(data=request.data)
+        if serialized.is_valid():
+            serialized.save()
+            return Response({'msg':'Data inserted Successfully'})
+        return Response(serialized.errors)
